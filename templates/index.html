@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agenda de llamadas</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 900px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+      h1 {
+        color: #1e3a8a;
+      }
+      form {
+        display: grid;
+        gap: 0.8rem;
+        background: #f5f7fb;
+        padding: 1rem;
+        border-radius: 8px;
+      }
+      input,
+      textarea,
+      button {
+        font-size: 1rem;
+        padding: 0.6rem;
+      }
+      button {
+        background: #1e3a8a;
+        color: white;
+        border: 0;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+      }
+      th,
+      td {
+        border-bottom: 1px solid #e4e8f0;
+        text-align: left;
+        padding: 0.6rem;
+      }
+      .badge {
+        display: inline-block;
+        border-radius: 4px;
+        padding: 0.2rem 0.5rem;
+        font-size: 0.85rem;
+        background: #e0ebff;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Agenda llamadas automáticas</h1>
+    <p>
+      Programa la llamada con el texto que quieres escuchar. Zona horaria de la app:
+      <strong>{{ timezone }}</strong>
+    </p>
+
+    <form action="/schedule" method="post">
+      <label>
+        Nombre del recordatorio
+        <input type="text" name="name" placeholder="Medicamento noche" required />
+      </label>
+
+      <label>
+        Número destino (formato E.164)
+        <input type="tel" name="phone_number" placeholder="+525511223344" required />
+      </label>
+
+      <label>
+        Fecha y hora
+        <input type="datetime-local" name="scheduled_at" required />
+      </label>
+
+      <label>
+        Mensaje que se dirá en la llamada
+        <textarea
+          name="message"
+          rows="3"
+          required
+          placeholder="Tienes que tomar acetaminofén de 50 miligramos"
+        ></textarea>
+      </label>
+
+      <button type="submit">Programar llamada</button>
+    </form>
+
+    <h2>Llamadas programadas</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Número</th>
+          <th>Fecha programada</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in reminders %}
+        <tr>
+          <td>{{ item.id }}</td>
+          <td>{{ item.name }}</td>
+          <td>{{ item.phone_number }}</td>
+          <td>{{ item.scheduled_at }}</td>
+          <td><span class="badge">{{ item.status }}</span></td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="5">No hay recordatorios aún.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>
